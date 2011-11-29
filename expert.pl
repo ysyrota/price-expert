@@ -8,7 +8,7 @@ get '/' => sub {
   $self->render('index');
 };
 
-get '/price' => sub {
+get '/prices' => sub {
   my $self = shift;
   $self->respond_to(
     json => sub { $self->render_json(['prices']) },
@@ -17,18 +17,21 @@ get '/price' => sub {
   );
 };
 
-post '/price' => sub {
+post '/prices' => sub {
     my $self = shift;
+    $self->rendered(501);
 };
 
-put '/price' => sub {
+put '/prices' => sub {
     my $self = shift;
     my $id = $self->param('id');
+    $self->rendered(501);
 };
 
-del '/price' => sub {
+del '/prices' => sub {
     my $self = shift;
     my $id = $self->param('id');
+    $self->rendered(501);
 };
 
 app->start;
