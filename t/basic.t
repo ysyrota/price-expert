@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 15;
+use Test::More tests => 17;
 
 BEGIN { require FindBin; $ENV{MOJO_HOME} = "$FindBin::Bin/" }
 require "$FindBin::Bin/../expert.pl";
@@ -15,6 +15,10 @@ my $t = Test::Mojo->new;
 
 # Index page
 $t->get_ok('/')->status_is(200);
+
+# Add record with incoplete arguments
+$t->post_form_ok('/prices' => {seller => 'test_seller1'})
+  ->status_is(400);
 
 # Add record
 $t->post_form_ok('/prices' => {seller => 'test_seller1', buyer => 'test_buyer1', article => 'test article', date => 'September 2001', price => 'too high', comment => 'test comment'})
