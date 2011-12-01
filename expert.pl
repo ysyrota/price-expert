@@ -28,8 +28,24 @@ get '/' => sub {
 };
 
 get '/prices' => sub {
-  my $self = shift;
-  $self->rendered(501);
+    my $self = shift;
+    my $id = $self->param('id');
+    if (defined $id) {
+        my $record = Model::Prices->load($id);
+        $self->render_json(
+            {
+                id     => $record->id,
+                seller => $record->seller,
+                buyer  => $record->buyer,
+                article=> $record->article,
+                date   => $record->date,
+                price  => $record->price,
+                comment=> $record->comment
+            }, status => 200);
+    } else {
+        $self->render_json({message => 'id is an obligatory parameter'},
+            status => 400);
+    }
 };
 
 # insertion
@@ -60,8 +76,32 @@ post '/prices' => sub {
 
 put '/prices' => sub {
     my $self = shift;
+    my @k = $self->param;
     my $id = $self->param('id');
-    $self->rendered(501);
+    if (defined $id) {
+        my $record = Model::Prices->load($id);
+        warn "loadedm $id";
+        Model->begin;
+        warn "loaded $id";
+        my @keys = $self->param;
+        for my $key (qw(seller buyer article date price)) {
+            $record->$key = $self->param($key) if $key ~~ @keys;
+        }
+        Model->commit;
+        $self->render_json(
+            {
+                id     => $record->id,
+                seller => $record->seller,
+                buyer  => $record->buyer,
+                article=> $record->article,
+                date   => $record->date,
+                price  => $record->price,
+                comment=> $record->comment
+            }, status => 200);
+    } else {
+        $self->render_json({message => 'id is an obligatory parameter'},
+            status => 400);
+    }
 };
 
 del '/prices' => sub {
