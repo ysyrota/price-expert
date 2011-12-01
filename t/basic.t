@@ -34,7 +34,8 @@ $t->get_ok("/prices?id=".$record->{id})
   ->json_content_is({id => $record->{id}, seller => 'test_seller1', buyer => 'test_buyer1', article => 'test article', date => 'September 2001', price => 'too high', comment => 'test comment'});
 
 # Update record
-$t->put_ok("/prices", {id => $record->{id}, comment => 'fixed comment'})
+my $params = Mojo::Parameters->new(id => $record->{id}, comment => "fixed comment");
+$t->put_ok("/prices?" . $params->to_string)
   ->status_is(200)
   ->json_content_is({id => $record->{id}, seller => 'test_seller1', buyer => 'test_buyer1', article => 'test article', date => 'September 2001', price => 'too high', comment => 'fixed comment'});
 
