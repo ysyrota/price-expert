@@ -76,27 +76,31 @@ post '/prices' => sub {
 
 put '/prices' => sub {
     my $self = shift;
-    my @k = $self->param;
     my $id = $self->param('id');
+
     if (defined $id) {
         my $record = Model::Prices->load($id);
-        warn "loadedm $id";
-        Model->begin;
-        warn "loaded $id";
         my @keys = $self->param;
-        for my $key (qw(seller buyer article date price)) {
-            $record->$key = $self->param($key) if $key ~~ @keys;
+        my %new_vals;
+        for my $key (qw(seller buyer article date price comment)) {
+            $new_vals{$key} = $self->param($key) if $key ~~ @keys;
         }
-        Model->commit;
+#        Model::Prices->update(\%new_vals);
+        Model->do(
+            'UPDATE prices SET '
+            . join(', ', map { "$_ = ?" } keys %new_vals)
+            . ' WHERE id=?',
+           {},
+           values %new_vals, $id);
         $self->render_json(
             {
-                id     => $record->id,
-                seller => $record->seller,
-                buyer  => $record->buyer,
-                article=> $record->article,
-                date   => $record->date,
-                price  => $record->price,
-                comment=> $record->comment
+                id     => $id,
+                seller => $new_vals{seller} || $record->seller,
+                buyer  => $new_vals{buyer}  || $record->buyer,
+                article=> $new_vals{article}|| $record->article,
+                date   => $new_vals{date}   || $record->date,
+                price  => $new_vals{price}  || $record->price,
+                comment=> $new_vals{comment}|| $record->comment
             }, status => 200);
     } else {
         $self->render_json({message => 'id is an obligatory parameter'},
