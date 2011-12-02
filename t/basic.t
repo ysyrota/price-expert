@@ -43,6 +43,10 @@ $t->put_ok("/prices?" . $params->to_string)
 $t->delete_ok("/prices", {id => $record->{id}})
   ->status_is(200);
 
+# Delete the same record again
+$t->delete_ok("/prices", {id => $record->{id}})
+  ->status_is(404);
+
 # Check deleted record
 $t->get_ok("/prices?id=".$record->{id})
   ->status_is(404);
