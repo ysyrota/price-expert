@@ -32,6 +32,7 @@ get '/prices' => sub {
     my $id = $self->param('id');
     if (defined $id) {
         my $record = Model::Prices->load($id);
+        if (defined
         $self->render_json(
             {
                 id     => $record->id,
@@ -111,7 +112,17 @@ put '/prices' => sub {
 del '/prices' => sub {
     my $self = shift;
     my $id = $self->param('id');
-    $self->rendered(501);
+    if (defined $id) {
+        my $rows_affected = Model::Prices->delete('where id=?', $id);
+        if ($rows_affected == 0) {
+            $self->rendered(404);
+        } else {
+            $self->rendered(200);
+        }
+    } else {
+        $self->render_json({message => 'id is an obligatory parameter'},
+            status => 400);
+    }
 };
 
 app->start;
