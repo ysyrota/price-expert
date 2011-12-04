@@ -29,24 +29,35 @@ get '/' => sub {
 
 get '/prices' => sub {
     my $self = shift;
-    my $id = $self->param('id');
-    if (defined $id) {
-        my $record = Model::Prices->load($id);
-        if (defined
-        $self->render_json(
-            {
-                id     => $record->id,
-                seller => $record->seller,
-                buyer  => $record->buyer,
-                article=> $record->article,
-                date   => $record->date,
-                price  => $record->price,
-                comment=> $record->comment
-            }, status => 200);
+    my @keys = $self->param;
+    my @result = ();
+    my $functor = sub {
+            push @result, {
+                id => $_->id,
+                seller => $_->seller,
+                buyer => $_->buyer,
+                article => $_->article,
+                date => $_->date,
+                price => $_->price,
+                comment => $_->comment};
+        };
+    if ('like' ~~ @keys) {
+        my $val = Model->dbh->quote('%'.$self->param('like').'%');
+        Model::Prices->iterate(
+            "WHERE seller LIKE $val OR buyer LIKE $val" ,
+            $functor);
+    } elsif (scalar @keys) {
+        my %vals;
+        for my $key (qw(id seller buyer article date price comment)) {
+            $vals{$key} = $self->param($key) if $key ~~ @keys;
+        }
+        Model::Prices->iterate(
+            'WHERE ' . join(', ', map { "$_ = ?" } keys %vals),
+            values %vals, $functor);
     } else {
-        $self->render_json({message => 'id is an obligatory parameter'},
-            status => 400);
+        Model::Prices->iterate($functor);
     }
+    $self->render_json(\@result);
 };
 
 # insertion
