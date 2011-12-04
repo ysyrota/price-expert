@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;
+use Test::More tests => 21;
 
 BEGIN { require FindBin; $ENV{MOJO_HOME} = "$FindBin::Bin/" }
 require "$FindBin::Bin/../expert.pl";
@@ -31,7 +31,7 @@ like($record->{id}, qr/^\d+$/, "id is a number");
 # Get record
 $t->get_ok("/prices?id=".$record->{id})
   ->status_is(200)
-  ->json_content_is({id => $record->{id}, seller => 'test_seller1', buyer => 'test_buyer1', article => 'test article', date => 'September 2001', price => 'too high', comment => 'test comment'});
+  ->json_content_is([{id => $record->{id}, seller => 'test_seller1', buyer => 'test_buyer1', article => 'test article', date => 'September 2001', price => 'too high', comment => 'test comment'}]);
 
 # Update record
 my $params = Mojo::Parameters->new(id => $record->{id}, comment => "fixed comment");
@@ -40,14 +40,14 @@ $t->put_ok("/prices?" . $params->to_string)
   ->json_content_is({id => $record->{id}, seller => 'test_seller1', buyer => 'test_buyer1', article => 'test article', date => 'September 2001', price => 'too high', comment => 'fixed comment'});
 
 # Delete record
-$t->delete_ok("/prices", {id => $record->{id}})
+$t->delete_ok("/prices?id=".$record->{id})
   ->status_is(200);
 
 # Delete the same record again
-$t->delete_ok("/prices", {id => $record->{id}})
+$t->delete_ok("/prices?id=".$record->{id})
   ->status_is(404);
 
 # Check deleted record
 $t->get_ok("/prices?id=".$record->{id})
-  ->status_is(404);
-
+  ->status_is(200)
+  ->json_content_is([]);
