@@ -1,0 +1,107 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    font-size: 100%;
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+body {
+    background-color: #FCFCFC;
+    color: #585858;
+    font-family: sans-serif;
+    font-size: 13px;
+}
+
+#wrapper {
+    margin: 0 auto;
+    width: 990px;
+}
+
+#sidebar {
+    height: 1908px;
+    background: url("style/images/noize.png") repeat scroll 100% 0 #596D7F;
+    border-left: 1px solid rgba(0, 0, 0, 0.5);
+    border-right: 1px solid rgba(0, 0, 0, 0.5);
+    float: left;
+    margin-top: -1;
+    position: fixed;
+    width: 258px;
+}
+
+#logo {
+    padding: 40px 32px 0;
+    text-align: left;
+}
+
+#logo a {
+    border: medium none;
+}
+
+#logo img {
+    display: inline;
+}
+
+#menu {
+    float: left;
+    font-size: 17px;
+    margin-bottom: 50px;
+    margin-top: 40px;
+    padding: 0 0 0 24px;
+    position: relative;
+    text-align: left;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+#menu ul {
+    background: url("style/images/menu-line.png") no-repeat scroll center bottom transparent;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+}
+
+#menu ul li {
+    background: url("style/images/menu-line.png") no-repeat scroll center top transparent;
+    padding: 0;
+    position: relative;
+}
+
+#menu ul li a {
+    background: none repeat scroll 0 0 transparent;
+    border: medium none;
+    color: #F0F0F0;
+    display: block;
+    padding: 12px 17px 10px 20px;
+    text-decoration: none;
+}
+
+#menu ul li a:hover {
+    background: url("style/images/menu-hover.png") repeat-y scroll left top transparent;
+    color: #FFFFFF;
+}
+
+#content {
+    float:right;
+    padding: 40px 0 20px;
+    width: 700px;
+}
+
+ul {
+    line-height: 20px;
+    margin-bottom: 20px;
+}
+
+ol, ul {
+    list-style: none outside none;
+}
+
+ul li {
+    padding-left: 15px;
+}
+
+.clear {
+    clear: both;
+}
