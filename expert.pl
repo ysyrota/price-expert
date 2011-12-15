@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+use utf8;
+
 package Model;
 use ORLite {
     file => 'prices.db',
@@ -142,10 +144,32 @@ __DATA__
 @@ index.html.ep
 % layout 'default';
 % title 'Welcome';
-Welcome to Price Expert!
+<div id="sidebar">
+  <div id="logo"><a href="/"><img alt="Price Expert" src="style/images/logo.png"></a></div>
+  <div id="menu">
+    <ul>
+      <li><a href="">Додати</a></li>
+      <li><a href="">Видалити</a></li>
+    </ul>
+  </div>
+</div>
+<div id="content">
+  <form id="searchform>
+    <input type="text" value="search"/>
+  </form>
+</div>
 
 @@ layouts/default.html.ep
-<!doctype html><html>
-  <head><title><%= title %></title></head>
-  <body><%= content %></body>
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css" media="all" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <%= content %>
+    </div>
+    <div class="clear"></div>
+  </body>
 </html>
