@@ -154,9 +154,42 @@ __DATA__
   </div>
 </div>
 <div id="content">
-  <form id="searchform>
-    <input type="text" value="search"/>
+  <form id="searchform">
+    <input id="search-field" type="text" value=""/>
   </form>
+  <table>
+    <tr>
+      <th>Покупець</th>
+      <th>Продавець</th>
+      <th>Продукт</th>
+      <th>Об’єм</th>
+      <th>Ціна</td>
+      <th>Дата</th></tr>
+    <tr>
+      <td>ВАТ "Рівень"</td>
+      <td>ТОВ "Вишиванка"</td>
+      <td>Мастило</td>
+      <td>2 л</td>
+      <td>2 грн 5 коп</td>
+      <td>весна 2010</td>
+    </tr>
+    <tr>
+      <td>ВАТ "Рівень"</td>
+      <td>ТОВ "Будучність"</td>
+      <td>Табуретки</td>
+      <td>6 шт</td>
+      <td>25 грн</td>
+      <td>літо 2010</td>
+    </tr>
+    <tr>
+      <td>ЗАТ "Контора"</td>
+      <td>ТОВ "Будучність"</td>
+      <td>Столи</td>
+      <td>2 шт</td>
+      <td>5 грн</td>
+      <td>літо 2011</td>
+    </tr>
+  </table>
 </div>
 
 @@ layouts/default.html.ep

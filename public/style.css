@@ -102,6 +102,55 @@ ul li {
     padding-left: 15px;
 }
 
+form {
+    width: 700px;
+}
+
+input[type="text"] {
+    background: url('style/images/search-icon.png') no-repeat scroll 5px 1px #F2F2F2;
+    border: 1px solid #DBDBDB;
+    color: #585858;
+    font-size: 13px;
+    height: 20px;
+    padding: 5px 38px;
+    width: 680px;
+    -moz-border-radius: 3px; 
+    -webkit-border-radius: 3px; 
+    border-radius: 3px;
+}
+
+table {
+    border-bottom: 1px solid #DEDEDE;
+    color: #6E6E6E;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table tr {
+    /* border-left: 1px solid #DEDEDE; */
+    border-top: 1px solid #DEDEDE;
+}
+
+table tr:nth-child(even) {
+    background: #ecf6ff;
+}
+
+table th {
+    /* border-right: 1px solid #DEDEDE; */
+    font-weight: normal;
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+table td {
+    /* border-right: 1px solid #DEDEDE; */
+    padding: 8px 10px;
+}
+
 .clear {
     clear: both;
 }
