@@ -155,7 +155,7 @@ __DATA__
 </div>
 <div id="content">
   <form id="searchform">
-    <input id="search-field" type="text" value=""/>
+    <input id="search-field" type="text">
   </form>
   <table>
     <tr>
@@ -163,7 +163,7 @@ __DATA__
       <th>Продавець</th>
       <th>Продукт</th>
       <th>Об’єм</th>
-      <th>Ціна</td>
+      <th>Ціна</th>
       <th>Дата</th></tr>
     <tr>
       <td>ВАТ "Рівень"</td>
