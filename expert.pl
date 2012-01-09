@@ -24,11 +24,19 @@ package main;
 
 use Mojolicious::Lite;
 use Mojo::JSON;
+
+# HTML
 get '/' => sub {
   my $self = shift;
   $self->render('index');
 };
 
+get '/add' => sub {
+  my $self = shift;
+  $self->render('add');
+} => 'add';
+
+# REST API
 get '/prices' => sub {
     my $self = shift;
     my @keys = $self->param;
@@ -144,65 +152,141 @@ __DATA__
 @@ index.html.ep
 % layout 'default';
 % title 'Welcome';
-<div id="sidebar">
-  <div id="logo"><a href="/"><img alt="Price Expert" src="style/images/logo.png"></a></div>
-  <div id="menu">
-    <ul>
-      <li><a href="">Додати</a></li>
-      <li><a href="">Видалити</a></li>
-    </ul>
-  </div>
-</div>
-<div id="content">
-  <form id="searchform">
-    <input id="search-field" type="text">
-  </form>
-  <table>
-    <tr>
-      <th>Покупець</th>
-      <th>Продавець</th>
-      <th>Продукт</th>
-      <th>Об’єм</th>
-      <th>Ціна</th>
-      <th>Дата</th></tr>
-    <tr>
-      <td>ВАТ "Рівень"</td>
-      <td>ТОВ "Вишиванка"</td>
-      <td>Мастило</td>
-      <td>2 л</td>
-      <td>2 грн 5 коп</td>
-      <td>весна 2010</td>
-    </tr>
-    <tr>
-      <td>ВАТ "Рівень"</td>
-      <td>ТОВ "Будучність"</td>
-      <td>Табуретки</td>
-      <td>6 шт</td>
-      <td>25 грн</td>
-      <td>літо 2010</td>
-    </tr>
-    <tr>
-      <td>ЗАТ "Контора"</td>
-      <td>ТОВ "Будучність"</td>
-      <td>Столи</td>
-      <td>2 шт</td>
-      <td>5 грн</td>
-      <td>літо 2011</td>
-    </tr>
-  </table>
-</div>
+        <div class="topbar" data-scrollspy="scrollspy">
+            <div class="topbar-inner">
+                <div class="container">
+                    <a class="brand" href="/">Price Expert</a>
+                    <form class="pull-left" action="">
+                        <input type="text" placeholder="Пошук"/>
+                    </form>
+                    <ul class="nav">
+                        <li><a href="<%= url_for 'add' %>">Додати</a></li>
+                        <li><a href="#">Видалити</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <table class="zebra-striped">
+                <thead>
+                    <tr>
+                        <th> </th>
+                        <th>Продавець</th>
+                        <th>Покупець</th>
+                        <th>Продукт</th>
+                        <th>Кількість</th>
+                        <th>Ціна</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" name="q1"/></td>
+                        <td>kerhtkjreh</td>
+                        <td>KUHlke</td>
+                        <td>welrfkh</td>
+                        <td>2 welr</td>
+                        <td>16 eklh</td>
+                        <td>Травень 2011</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="q2"/></td>
+                        <td>kerhtkjreh</td>
+                        <td>KUHlke</td>
+                        <td>welrfkh</td>
+                        <td>2 welr</td>
+                        <td>16 eklh</td>
+                        <td>Травень 2011</td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" name="q3"/></td>
+                        <td>kerhtkjreh</td>
+                        <td>KUHlke</td>
+                        <td>welrfkh</td>
+                        <td>2 welr</td>
+                        <td>16 eklh</td>
+                        <td>Травень 2011</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div><!-- /container -->
+
+@@ add.html.ep
+% layout 'default';
+% title 'Додати нову ціну';
+        <div class="topbar" data-scrollspy="scrollspy">
+            <div class="topbar-inner">
+                <div class="container">
+                    <a class="brand" href="/">Price Expert</a>
+                    <form class="pull-left" action="">
+                        <input type="text" placeholder="Пошук"/>
+                    </form>
+                    <ul class="nav">
+                        <li><a href="#">Додати</a></li>
+                        <li><a href="#">Видалити</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+         <div class="row"
+          <div class="span12">
+            <form>
+              <fieldset>
+                <legend>Нова ціна</legend>
+                  <div class="clearfix">
+                      <label for="seller">Продавець</label>
+                      <div class="input">
+                          <input id="seller" type="text" size="30" name="seller">
+                      </div>
+                  </div>
+                  <div class="clearfix">
+                      <label for="buyer">Покупець</label>
+                      <div class="input">
+                          <input id="buyer" type="text" size="30" name="buyer">
+                      </div>
+                  </div>
+                  <div class="clearfix">
+                      <label for="article">Товар</label>
+                      <div class="input">
+                          <input id="article" type="text" size="30" name="article">
+                      </div>
+                  </div>
+                  <div class="clearfix">
+                      <label for="price">Ціна</label>
+                      <div class="input">
+                          <input id="price" type="text" size="30" name="price">
+                      </div>
+                  </div>
+                  <div class="clearfix">
+                      <label for="date">Дата</label>
+                      <div class="input">
+                          <input id="date" type="text" size="30" name="date">
+                      </div>
+                  </div>
+                  <div class="actions">
+                      <input class="btn primary" type="submit" value="Додати">
+                      <button class="btn" type="reset">Очистити</button>
+                  </div>
+              </fieldset>
+            </form>
+          </div>
+         </div>
+        </div>
 
 @@ layouts/default.html.ep
 <!doctype html>
 <html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="style.css" media="all" />
-    <title><%= title %></title>
-  </head>
-  <body>
-    <div id="wrapper">
-      <%= content %>
-    </div>
-    <div class="clear"></div>
-  </body>
+    <head>
+        <meta charset="utf-8">
+        <title><%= title %></title>
+        <link rel="stylesheet" href="bootstrap.min.css">
+        <script type="text/javascript" src="jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="jquery-1.8.16.custom.min.js"></script>
+    </head>
+    <body style="padding-top: 40px">
+        <%= content %>
+    </body>
 </html>
