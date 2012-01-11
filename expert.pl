@@ -263,6 +263,9 @@ __DATA__
                   <div class="clearfix">
                       <label for="date">Дата</label>
                       <div class="input">
+                          <script>
+                            $(function() { $( "#date" ).datepicker(); });
+                          </script>
                           <input id="date" type="text" size="30" name="date">
                       </div>
                   </div>
@@ -284,7 +287,7 @@ __DATA__
         <title><%= title %></title>
         <link rel="stylesheet" href="bootstrap.min.css">
         <script type="text/javascript" src="jquery-1.6.2.min.js"></script>
-        <script type="text/javascript" src="jquery-1.8.16.custom.min.js"></script>
+        <script type="text/javascript" src="jquery-ui-1.8.17.custom.min.js"></script>
     </head>
     <body style="padding-top: 40px">
         <%= content %>
