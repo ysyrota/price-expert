@@ -97,6 +97,7 @@ post '/prices' => sub {
                 buyer => $record->buyer,
                 article => $record->article,
                 date => $record->date,
+                amount => $record->amount,
                 price => $record->price,
                 comment => $record->comment
             }, status => 201);
@@ -162,8 +163,21 @@ __DATA__
 % content_for header => begin
 <script type="text/javascript">
     $(document).ready(function() {
-        $('a.delete').click(function() {
-            $('#confirmDeleteModal').modal('show');
+        var pricetable = $('#pricetable tbody');
+        $.getJSON('/prices', function(data) {
+            $.each(data, function(key, val) {
+                pricetable.append(
+                    '<tr><td><a href="#" class="delete-item-'+key+'"><i class="icon-trash"></i></a></td>'
+                    +'<td>'+val.seller+'</td>'
+                    +'<td>'+val.buyer+'</td>'
+                    +'<td>'+val.article+'</td>'
+                    +'<td>'+val.amount+'</td>'
+                    +'<td>'+val.price+'</td>'
+                    +'<td>'+val.date+'</td></tr>');
+            }),
+            $('a.delete-item-*').click(function() {
+                $('#confirmDeleteModal').modal('show');
+            });
         });
     });
 </script>
@@ -182,7 +196,7 @@ __DATA__
           </div>
         </div>
         <div class="container">
-            <table class="table table-striped">
+            <table class="table table-striped" id="pricetable">
                 <thead>
                     <tr>
                         <th> </th>
@@ -195,33 +209,7 @@ __DATA__
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><a href="#" class="delete"><i class="icon-trash"></i></a></td>
-                        <td>kerhtkjreh</td>
-                        <td>KUHlke</td>
-                        <td>welrfkh</td>
-                        <td>2 welr</td>
-                        <td>16 eklh</td>
-                        <td>Травень 2011</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="q2"/></td>
-                        <td>kerhtkjreh</td>
-                        <td>KUHlke</td>
-                        <td>welrfkh</td>
-                        <td>2 welr</td>
-                        <td>16 eklh</td>
-                        <td>Травень 2011</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="q3"/></td>
-                        <td>kerhtkjreh</td>
-                        <td>KUHlke</td>
-                        <td>welrfkh</td>
-                        <td>2 welr</td>
-                        <td>16 eklh</td>
-                        <td>Травень 2011</td>
-                    </tr>
+                  %# search content should be here
                 </tbody>
             </table>
         </div><!-- /container -->
