@@ -281,7 +281,7 @@ __DATA__
 
 @@ layouts/default.html.ep
 <!doctype html>
-<html>
+<html style="margin-top:60px">
     <head>
         <meta charset="utf-8">
         <title><%= title %></title>
