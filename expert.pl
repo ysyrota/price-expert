@@ -5,6 +5,7 @@ use utf8;
 package Model;
 use ORLite {
     file => 'prices.db',
+    unicode => 1,
     create => sub {
         my $dbh = shift;
         $dbh->do(
@@ -13,10 +14,14 @@ use ORLite {
               seller TEXT NOT NULL,
               buyer TEXT NOT NULL,
               article TEXT NOT NULL,
+              amount TEXT NOT NULL,
               date TEXT NOT NULL,
               price TEXT NOT NULL,
               comment TEXT NULL)'
         );
+        $dbh->do("INSERT INTO prices (seller, buyer, article, amount, date, price) VALUES ('Продавець 1', 'Покупець 1', 'Товар 1', '6 штук', 'Жовтень 2006', '10 коп.')");
+        $dbh->do("INSERT INTO prices (seller, buyer, article, amount, date, price) VALUES ('Продавець 2', 'Покупець 1', 'Товар 2', '7-8 штук', 'Жовтень 2008', '12 коп.')");
+        $dbh->do("INSERT INTO prices (seller, buyer, article, amount, date, price, comment) VALUES ('Продавець 2', 'Покупець 2', 'Товар 1', 'коробка', 'Жовтень 2009', '18 коп.', 'коментар до ціни')");
     }
 };
 
@@ -48,6 +53,7 @@ get '/prices' => sub {
                 buyer => $_->buyer,
                 article => $_->article,
                 date => $_->date,
+                amount => $_->amount,
                 price => $_->price,
                 comment => $_->comment};
         };
@@ -65,7 +71,8 @@ get '/prices' => sub {
             'WHERE ' . join(', ', map { "$_ = ?" } keys %vals),
             values %vals, $functor);
     } else {
-        Model::Prices->iterate($functor);
+        Model::Prices->iterate(
+            "ORDER BY id DESC LIMIT 100", $functor);
     }
     $self->render_json(\@result);
 };
@@ -152,23 +159,30 @@ __DATA__
 @@ index.html.ep
 % layout 'default';
 % title 'Welcome';
-        <div class="topbar" data-scrollspy="scrollspy">
-            <div class="topbar-inner">
-                <div class="container">
-                    <a class="brand" href="/">Price Expert</a>
-                    <form class="pull-left" action="">
-                        <input type="text" placeholder="Пошук"/>
-                    </form>
-                    <ul class="nav">
-                        <li><a href="<%= url_for 'add' %>">Додати</a></li>
-                        <li><a href="#">Видалити</a></li>
-                    </ul>
-                </div>
-            </div>
+% content_for header => begin
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('a.delete').click(function() {
+            $('#confirmDeleteModal').modal('show');
+        });
+    });
+</script>
+% end
+        <div class="modal hide fade" id="confirmDeleteModal">
+          <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>Видалення ціни</h3>
+          </div>
+          <div class="modal-body">
+            <p>Ви хочете видалилити цю ціну?</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-danger"><i class="icon-trash icon-white"></i>Видалити</a>
+            <a href="#" class="btn" data-dismiss="modal">Скасувати видалення</a>
+          </div>
         </div>
-
         <div class="container">
-            <table class="zebra-striped">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th> </th>
@@ -182,7 +196,7 @@ __DATA__
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="checkbox" name="q1"/></td>
+                        <td><a href="#" class="delete"><i class="icon-trash"></i></a></td>
                         <td>kerhtkjreh</td>
                         <td>KUHlke</td>
                         <td>welrfkh</td>
@@ -215,57 +229,45 @@ __DATA__
 @@ add.html.ep
 % layout 'default';
 % title 'Додати нову ціну';
-        <div class="topbar" data-scrollspy="scrollspy">
-            <div class="topbar-inner">
-                <div class="container">
-                    <a class="brand" href="/">Price Expert</a>
-                    <form class="pull-left" action="">
-                        <input type="text" placeholder="Пошук"/>
-                    </form>
-                    <ul class="nav">
-                        <li><a href="#">Додати</a></li>
-                        <li><a href="#">Видалити</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
         <div class="container">
          <div class="row"
           <div class="span12">
-            <form>
+            <form class="form-horizontal">
               <fieldset>
                 <legend>Нова ціна</legend>
-                  <div class="clearfix">
-                      <label for="seller">Продавець</label>
-                      <div class="input">
+                  <div class="control-group">
+                      <label class="control-label" for="seller">Продавець</label>
+                      <div class="controls">
                           <input id="seller" type="text" size="30" name="seller">
                       </div>
                   </div>
-                  <div class="clearfix">
-                      <label for="buyer">Покупець</label>
-                      <div class="input">
+                  <div class="control-group">
+                      <label class="control-label" for="buyer">Покупець</label>
+                      <div class="controls">
                           <input id="buyer" type="text" size="30" name="buyer">
                       </div>
                   </div>
-                  <div class="clearfix">
-                      <label for="article">Товар</label>
-                      <div class="input">
+                  <div class="control-group">
+                      <label class="control-label" for="article">Продукт</label>
+                      <div class="controls">
                           <input id="article" type="text" size="30" name="article">
                       </div>
                   </div>
-                  <div class="clearfix">
-                      <label for="price">Ціна</label>
-                      <div class="input">
+                  <div class="control-group">
+                      <label class="control-label" for="amount">Кількість</label>
+                      <div class="controls">
+                          <input id="article" type="text" size="30" name="amount">
+                      </div>
+                  </div>
+                  <div class="control-group">
+                      <label class="control-label" for="price">Ціна</label>
+                      <div class="controls">
                           <input id="price" type="text" size="30" name="price">
                       </div>
                   </div>
-                  <div class="clearfix">
-                      <label for="date">Дата</label>
-                      <div class="input">
-                          <script>
-                            $(function() { $( "#date" ).datepicker(); });
-                          </script>
+                  <div class="control-group">
+                      <label class="control-label" for="date">Дата</label>
+                      <div class="controls">
                           <input id="date" type="text" size="30" name="date">
                       </div>
                   </div>
@@ -281,15 +283,29 @@ __DATA__
 
 @@ layouts/default.html.ep
 <!doctype html>
-<html style="margin-top:60px">
+<html>
     <head>
         <meta charset="utf-8">
         <title><%= title %></title>
         <link rel="stylesheet" href="bootstrap.min.css">
-        <script type="text/javascript" src="jquery-1.6.2.min.js"></script>
-        <script type="text/javascript" src="jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
+        <%= content_for 'header' %>
     </head>
     <body style="padding-top: 40px">
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="/">Price Expert</a>
+                    <form class="navbar-search pull-left" action="">
+                        <input type="text" class="search-query" placeholder="Пошук"/>
+                    </form>
+                    <ul class="nav">
+                        <li><a href="<%= url_for 'add' %>"><i class="icon-plus-sign icon-white"></i> Додати</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <%= content %>
+        <script src="/js/bootstrap.min.js"></script>
     </body>
 </html>
