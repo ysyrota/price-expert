@@ -162,12 +162,18 @@ __DATA__
 % title 'Welcome';
 % content_for header => begin
 <script type="text/javascript">
+    var deleteItem = function(id) {
+        $('#confirmDeleteModal .modal-body p').replaceWith(
+            '<p>Ви справді хочете видалити ціну '+id);
+        $('#confirmDeleteModal').modal('show');
+    };
+
     $(document).ready(function() {
         var pricetable = $('#pricetable tbody');
         $.getJSON('/prices', function(data) {
             $.each(data, function(key, val) {
                 pricetable.append(
-                    '<tr><td><a href="#" class="delete-item-'+key+'"><i class="icon-trash"></i></a></td>'
+                    '<tr><td><a href="#" onclick="deleteItem('+val.id+')"><i class="icon-trash"></i></a></td>'
                     +'<td>'+val.seller+'</td>'
                     +'<td>'+val.buyer+'</td>'
                     +'<td>'+val.article+'</td>'
@@ -188,7 +194,7 @@ __DATA__
             <h3>Видалення ціни</h3>
           </div>
           <div class="modal-body">
-            <p>Ви хочете видалилити цю ціну?</p>
+            <p></p>
           </div>
           <div class="modal-footer">
             <a href="#" class="btn btn-danger"><i class="icon-trash icon-white"></i>Видалити</a>
