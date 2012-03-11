@@ -84,12 +84,15 @@ post '/prices' => sub {
     my $buyer = $self->param('buyer');
     my $article = $self->param('article');
     my $date = $self->param('date');
+    my $amount = $self->param('amount');
     my $price = $self->param('price');
     my $comment = $self->param('comment');
-    unless (defined($seller) and defined($buyer) and defined($article) and defined($date) and defined($price)) {
+    unless (defined($seller) and defined($buyer) and defined($article) and
+        defined($date) and defined($amount) and defined($price)) {
         $self->render_json({message => 'seller, buyer, article, date and price are obligatory parameters'}, status => 400);
     } else {
-        my $record = Model::Prices->create(seller => $seller, buyer => $buyer, article => $article, date => $date, price => $price, comment => $comment);
+        my $record = Model::Prices->create(seller => $seller, buyer => $buyer,
+            article => $article, date => $date, amount => $amount, price => $price, comment => $comment);
         $self->render_json(
             {
                 id  => $record->id,
@@ -141,6 +144,7 @@ put '/prices' => sub {
 del '/prices' => sub {
     my $self = shift;
     my $id = $self->param('id');
+    warn "here for id is $id\n";
     if (defined $id) {
         my $rows_affected = Model::Prices->delete('where id=?', $id);
         if ($rows_affected == 0) {
@@ -162,29 +166,38 @@ __DATA__
 % title 'Welcome';
 % content_for header => begin
 <script type="text/javascript">
-    var deleteItem = function(id) {
-        $('#confirmDeleteModal .modal-body p').replaceWith(
-            '<p>Ви справді хочете видалити ціну '+id);
-        $('#confirmDeleteModal').modal('show');
-    };
-
-    $(document).ready(function() {
+    var refreshList = function() {
         var pricetable = $('#pricetable tbody');
+        pricetable.empty();
         $.getJSON('/prices', function(data) {
             $.each(data, function(key, val) {
-                pricetable.append(
-                    '<tr><td><a href="#" onclick="deleteItem('+val.id+')"><i class="icon-trash"></i></a></td>'
+                pricetable.prepend(
+                    '<tr><td><a href="#" onclick="deleteItemConfirmation('+val.id+')"><i class="icon-trash"></i></a></td>'
                     +'<td>'+val.seller+'</td>'
                     +'<td>'+val.buyer+'</td>'
                     +'<td>'+val.article+'</td>'
                     +'<td>'+val.amount+'</td>'
                     +'<td>'+val.price+'</td>'
                     +'<td>'+val.date+'</td></tr>');
-            }),
-            $('a.delete-item-*').click(function() {
-                $('#confirmDeleteModal').modal('show');
             });
         });
+    };
+
+    var deleteItem = function(id) {
+        $.ajax({ type: 'DELETE', url: "/prices", data: "id="+id });
+        refreshList();
+        $('#confirmDeleteModal').modal('hide');
+    };
+
+    var deleteItemConfirmation = function(id) {
+        $('#confirmDeleteModal .modal-body p').replaceWith(
+            '<p>Ви справді хочете видалити ціну '+id);
+        $('#deleteButton').click(function() { deleteItem(id) });
+        $('#confirmDeleteModal').modal('show');
+    };
+
+    $(document).ready(function() {
+        refreshList();
     });
 </script>
 % end
@@ -197,7 +210,7 @@ __DATA__
             <p></p>
           </div>
           <div class="modal-footer">
-            <a href="#" class="btn btn-danger"><i class="icon-trash icon-white"></i>Видалити</a>
+            <a href="#" class="btn btn-danger" id="deleteButton"><i class="icon-trash icon-white"></i>Видалити</a>
             <a href="#" class="btn" data-dismiss="modal">Скасувати видалення</a>
           </div>
         </div>
@@ -217,6 +230,17 @@ __DATA__
                 <tbody>
                   %# search content should be here
                 </tbody>
+                <tfoot>
+                    <tr id="add-row">
+                      <td><i class="icon-plus"></i></td>
+                      <td><input type="text" maxwidth="10"></input></td>
+                      <td><input type="text" maxwidth="10"></input></td>
+                      <td><input type="text" maxwidth="10"></input></td>
+                      <td><input type="text" maxwidth="10"></input></td>
+                      <td><input type="text" maxwidth="10"></input></td>
+                      <td><input type="text" maxwidth="10"></input></td>
+                    </tr>
+                </tfoot>
             </table>
         </div><!-- /container -->
 
